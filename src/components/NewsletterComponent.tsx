@@ -101,7 +101,6 @@ export default function NewsletterComponent() {
           </p>
         </div>
 
-        {/* noValidate förhindrar webbläsarens inbyggda validering från att krocka */}
         <form onSubmit={handleSubmit} noValidate>
           <div className="flex flex-col md:flex-row items-stretch">
             <div className="w-full md:w-1/2">
@@ -161,21 +160,14 @@ export default function NewsletterComponent() {
 
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 mt-6">
             <div className="flex flex-col gap-1 w-full md:w-auto">
-              {/*
-                FIX: Riktig <label> + <input type="checkbox"> istället för klickbar div.
-                På mobil är onClick på icke-interaktiva element opålitligt –
-                ett riktigt checkbox-input + label fungerar alltid.
-              */}
               <label className="flex items-center gap-3 text-sm text-gray-600 cursor-pointer py-2">
                 <div className="relative shrink-0 w-6 h-6">
-                  {/* Gömd men tillgänglig för skärmläsare och touch */}
                   <input
                     type="checkbox"
                     checked={formData.accepted}
                     onChange={handleCheckboxChange}
                     className="sr-only"
                   />
-                  {/* Visuell checkbox */}
                   <div
                     className={`w-6 h-6 border-2 bg-white ${
                       formData.accepted ? "border-gray-800" : "border-gray-400"
@@ -203,10 +195,6 @@ export default function NewsletterComponent() {
               )}
             </div>
 
-            {/*
-              FIX: style touchAction:"manipulation" tar bort 300ms delay på iOS/Android
-              som annars kan göra att knappen känns seg eller missar touch-events.
-            */}
             <button
               type="submit"
               disabled={isLoading}
