@@ -12,10 +12,10 @@ type Category = { name: string; image: string; position?: string };
 function CategoryCard({ cat, alwaysActive = false }: { cat: Category; alwaysActive?: boolean }) {
   return (
     <div
-      className={`relative cursor-pointer group transition-all duration-300 ease-in-out bg-gray-50 flex-shrink-0
-        ${!alwaysActive ? "shadow-[0px_0px_20px_8px_rgba(0,0,0,0.25)] hover:-translate-y-4 hover:shadow-[12px_35px_60px_rgba(0,0,0,0.6)] hover:z-10" : ""}`}
-      style={{ aspectRatio: "1/1", width: alwaysActive ? "75vw" : "auto" }}
-    >
+    className={`relative cursor-pointer group transition-all duration-300 ease-in-out flex-shrink-0 bg-black
+    ${!alwaysActive ? "shadow-[0px_0px_20px_8px_rgba(0,0,0,0.25)] hover:-translate-y-4 hover:shadow-[12px_35px_60px_rgba(0,0,0,0.6)] hover:z-10" : ""}`}
+  style={{ aspectRatio: "1/1", width: alwaysActive ? "75vw" : "auto" }}
+>
       <div className="absolute inset-0 overflow-hidden">
         <img
           src={cat.image}

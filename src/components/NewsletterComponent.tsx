@@ -91,7 +91,7 @@ export default function NewsletterComponent() {
     }`;
 
   return (
-    <div className="py-16 px-4 bg-white md:bg-gray-100">
+    <div className="py-16 px-4 bg-white md:bg-transparent">
       <div className="max-w-4xl mx-auto">
 
         <div className="text-center mb-10">
@@ -161,7 +161,7 @@ export default function NewsletterComponent() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 mt-6">
             <div className="flex flex-col gap-1 w-full md:w-auto">
               <label className="flex items-center gap-3 text-sm text-gray-600 cursor-pointer py-2">
-                <div className="relative shrink-0 w-6 h-6">
+                <div className="relative shrink-0 w-6 h-6 transition-transform hover:scale-110">
                   <input
                     type="checkbox"
                     checked={formData.accepted}
@@ -199,7 +199,7 @@ export default function NewsletterComponent() {
               type="submit"
               disabled={isLoading}
               style={{ touchAction: "manipulation" }}
-              className="w-full md:w-auto bg-orange-500 text-white font-semibold px-14 py-3 tracking-widest uppercase text-sm active:opacity-70 disabled:opacity-60 transition-all"
+              className="w-full md:w-auto bg-orange-500 text-white font-semibold px-14 py-3 tracking-widest uppercase text-sm active:opacity-70 disabled:opacity-60 transition-all border-2 border-transparent hover:bg-white hover:text-black hover:border-black"
             >
               {isLoading ? "Skickar..." : "Sign Up"}
             </button>
