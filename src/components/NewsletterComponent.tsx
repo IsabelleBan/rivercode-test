@@ -17,7 +17,12 @@ interface FieldErrors {
 }
 
 export default function NewsletterComponent() {
-  const [formData, setFormData] = useState<FormData>({ firstname: "", lastname: "", email: "", accepted: false });
+  const [formData, setFormData] = useState<FormData>({
+    firstname: "",
+    lastname: "",
+    email: "",
+    accepted: false,
+  });
   const [errors, setErrors] = useState<FieldErrors>({});
   const [successMessage, setSuccessMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -31,11 +36,11 @@ export default function NewsletterComponent() {
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
       errs.email = "Ange en giltig e-postadress.";
     }
-    if (!data.accepted) errs.accepted = "Du måste acceptera villkoren.";
     return errs;
   }
 
-  async function handleSubmit() {
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
     setSuccessMessage("");
     const clientErrors = validate(formData);
     if (Object.keys(clientErrors).length > 0) {
@@ -72,75 +77,151 @@ export default function NewsletterComponent() {
     }
   }
 
+  function handleCheckboxChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const checked = e.target.checked;
+    setFormData((prev) => ({ ...prev, accepted: checked }));
+    if (errors.accepted) {
+      setErrors((prev) => ({ ...prev, accepted: undefined }));
+    }
+  }
+
   const inputClass = (error?: string) =>
-    `w-full bg-gray-100 px-4 py-3 text-sm font-semibold tracking-widest text-gray-800 placeholder-gray-800 outline-none ${error ? "ring-1 ring-red-400" : ""}`;
+    `w-full bg-gray-100 px-4 py-3 text-sm font-semibold tracking-widest text-gray-800 placeholder-gray-800 outline-none ${
+      error ? "ring-1 ring-red-400" : ""
+    }`;
 
   return (
     <div className="py-16 px-4 bg-white md:bg-gray-100">
       <div className="max-w-4xl mx-auto">
 
         <div className="text-center mb-10">
-          <p className="text-2xl font-bold text-gray-800">Nyhetsbrev</p>
-          <p className="text-2xl font-bold text-gray-800">Få 10% På Ditt Första Köp</p>
+          <p className="text-2xl font-bold text-gray-800 uppercase">Nyhetsbrev</p>
+          <p className="text-2xl font-bold text-gray-800 uppercase">
+            Få 10% På Ditt Första Köp
+          </p>
         </div>
 
-        <div className="flex flex-col md:flex-row items-stretch">
-          <div className="w-full md:w-1/2">
-            <img src="/berg.jpg" alt="Natur" className="w-full h-full object-cover" />
-          </div>
+        {/* noValidate förhindrar webbläsarens inbyggda validering från att krocka */}
+        <form onSubmit={handleSubmit} noValidate>
+          <div className="flex flex-col md:flex-row items-stretch">
+            <div className="w-full md:w-1/2">
+              <img
+                src="/berg.jpg"
+                alt="Natur"
+                className="w-full h-full object-cover"
+              />
+            </div>
 
-          <div className="w-full md:w-1/2 bg-white px-0 md:px-8 py-8 flex flex-col justify-center gap-6">
-            <div>
-              <input type="text" name="firstname" placeholder="FÖRNAMN" value={formData.firstname} onChange={handleChange} className={inputClass(errors.firstname)} />
-              {errors.firstname && <p className="text-red-500 text-xs mt-1">{errors.firstname}</p>}
-            </div>
-            <div>
-              <input type="text" name="lastname" placeholder="EFTERNAMN" value={formData.lastname} onChange={handleChange} className={inputClass(errors.lastname)} />
-              {errors.lastname && <p className="text-red-500 text-xs mt-1">{errors.lastname}</p>}
-            </div>
-            <div>
-              <input type="email" name="email" placeholder="E-POSTADRESS" value={formData.email} onChange={handleChange} className={inputClass(errors.email)} />
-              {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
-            </div>
-          </div>
-        </div>
-
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4 mt-6">
-          <div className="flex flex-col gap-1 w-full md:w-auto">
-            <label className="flex items-center gap-3 text-sm text-gray-600 cursor-pointer">
-              <div className="relative shrink-0">
+            <div className="w-full md:w-1/2 bg-white px-0 md:px-8 py-8 flex flex-col justify-center gap-6">
+              <div>
                 <input
-                  type="checkbox"
-                  checked={formData.accepted}
-                  onChange={(e) => {
-                    setFormData((prev) => ({ ...prev, accepted: e.target.checked }));
-                    if (errors.accepted) setErrors((prev) => ({ ...prev, accepted: undefined }));
-                  }}
-                  style={{ borderRadius: 0 }}
-                  className="appearance-none w-6 h-6 border-2 border-gray-400 bg-white checked:bg-white checked:border-gray-800 cursor-pointer transition-transform duration-300 hover:scale-125 active:scale-125"
+                  type="text"
+                  name="firstname"
+                  placeholder="FÖRNAMN"
+                  value={formData.firstname}
+                  onChange={handleChange}
+                  className={inputClass(errors.firstname)}
+                  autoComplete="given-name"
                 />
-                {formData.accepted && (
-                  <svg className="absolute inset-0 m-auto w-5 h-5 pointer-events-none text-gray-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
+                {errors.firstname && (
+                  <p className="text-red-500 text-xs mt-1">{errors.firstname}</p>
                 )}
               </div>
-              Jag accepterar hantering av personuppgifter.
-            </label>
-            {errors.accepted && <p className="text-red-500 text-xs ml-9">{errors.accepted}</p>}
+              <div>
+                <input
+                  type="text"
+                  name="lastname"
+                  placeholder="EFTERNAMN"
+                  value={formData.lastname}
+                  onChange={handleChange}
+                  className={inputClass(errors.lastname)}
+                  autoComplete="family-name"
+                />
+                {errors.lastname && (
+                  <p className="text-red-500 text-xs mt-1">{errors.lastname}</p>
+                )}
+              </div>
+              <div>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="E-POSTADRESS"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className={inputClass(errors.email)}
+                  autoComplete="email"
+                  inputMode="email"
+                />
+                {errors.email && (
+                  <p className="text-red-500 text-xs mt-1">{errors.email}</p>
+                )}
+              </div>
+            </div>
           </div>
 
-          <button
-            onClick={handleSubmit}
-            disabled={isLoading}
-            className="w-full md:w-auto bg-orange-500 text-white border-2 border-orange-500 hover:bg-white hover:text-gray-800 hover:border-gray-800 hover:scale-105 active:scale-95 font-semibold px-14 py-3 tracking-widest uppercase text-sm transition-all duration-200 disabled:opacity-60"
-          >
-            {isLoading ? "Skickar..." : "Sign Up"}
-          </button>
-        </div>
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 mt-6">
+            <div className="flex flex-col gap-1 w-full md:w-auto">
+              {/*
+                FIX: Riktig <label> + <input type="checkbox"> istället för klickbar div.
+                På mobil är onClick på icke-interaktiva element opålitligt –
+                ett riktigt checkbox-input + label fungerar alltid.
+              */}
+              <label className="flex items-center gap-3 text-sm text-gray-600 cursor-pointer py-2">
+                <div className="relative shrink-0 w-6 h-6">
+                  {/* Gömd men tillgänglig för skärmläsare och touch */}
+                  <input
+                    type="checkbox"
+                    checked={formData.accepted}
+                    onChange={handleCheckboxChange}
+                    className="sr-only"
+                  />
+                  {/* Visuell checkbox */}
+                  <div
+                    className={`w-6 h-6 border-2 bg-white ${
+                      formData.accepted ? "border-gray-800" : "border-gray-400"
+                    }`}
+                  />
+                  {formData.accepted && (
+                    <svg
+                      className="absolute inset-0 m-auto w-5 h-5 pointer-events-none text-gray-800"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="3"
+                      aria-hidden="true"
+                    >
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  )}
+                </div>
+                <span className="select-none">
+                  Jag accepterar hantering av personuppgifter.
+                </span>
+              </label>
+              {errors.accepted && (
+                <p className="text-red-500 text-xs ml-9">{errors.accepted}</p>
+              )}
+            </div>
+
+            {/*
+              FIX: style touchAction:"manipulation" tar bort 300ms delay på iOS/Android
+              som annars kan göra att knappen känns seg eller missar touch-events.
+            */}
+            <button
+              type="submit"
+              disabled={isLoading}
+              style={{ touchAction: "manipulation" }}
+              className="w-full md:w-auto bg-orange-500 text-white font-semibold px-14 py-3 tracking-widest uppercase text-sm active:opacity-70 disabled:opacity-60 transition-all"
+            >
+              {isLoading ? "Skickar..." : "Sign Up"}
+            </button>
+          </div>
+        </form>
 
         {successMessage && (
-          <p className="text-green-600 text-sm font-medium text-center mt-4">{successMessage}</p>
+          <p className="text-green-600 text-sm font-medium text-center mt-4">
+            {successMessage}
+          </p>
         )}
 
       </div>
